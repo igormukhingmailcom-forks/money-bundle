@@ -28,14 +28,16 @@ class Configuration implements ConfigurationInterface
 			? ResourceBundle::getLocales('')
 			: Intl::getLanguageBundle()->getLocales();
 
-		if (false === in_array($locale, $locales)) {
-			throw new InvalidConfigurationException("Locale '$locale' is not valid.");
-		}
-
 		if (2 == strlen($locale)) {
 			// Default US dollars
 			$locale .= '_US';
+		} elseif (strlen($locale) > 5) {
+			$locale = substr($locale, 0, 5);
 		}
+
+        if (false === in_array($locale, $locales)) {
+            throw new InvalidConfigurationException("Locale '$locale' is not valid.");
+        }
 
 		$formatter = new NumberFormatter($locale, NumberFormatter::CURRENCY);
 		$this->currencyCode = $formatter->getTextAttribute(NumberFormatter::CURRENCY_CODE);
